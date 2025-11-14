@@ -1,0 +1,45 @@
+{
+  "id": "/",
+  "name": "Evrolev – Euro Transition Calculator",
+  "short_name": "Evrolev",
+  "description": "Offline-first euro transition calculator for Bulgarian retailers with dual currency input and change breakdown.",
+  "lang": "bg",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
+  "orientation": "portrait",
+  "theme_color": "#002855",
+  "background_color": "#ffffff",
+  "categories": ["finance", "business", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New calculation",
+      "short_name": "New calc",
+      "description": "Reset inputs for a new transaction",
+      "url": "/?reset=true"
+    }
+  ]
+}
+

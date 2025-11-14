@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { InstallPrompt } from './components/InstallPrompt'
 
 type Language = 'en' | 'bg'
 
@@ -343,7 +344,7 @@ function App() {
             </div>
           ) : (
             <div
-              className="mb-4 bg-gray-50 shadow-lg rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white/95 dark:bg-neutral-900/95 backdrop-blur px-3 pt-3 pb-2 shadow-sm"
+              className="mb-4 bg-gray-50 rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white/95 dark:bg-neutral-900/95 backdrop-blur px-3 pt-3 pb-2 shadow-md"
               style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 8px)' }}
             >
               <div className="flex items-center justify-end mb-2">
@@ -393,8 +394,10 @@ function App() {
           </div>
         </div>
       </div>
+      <InstallPrompt />
     </div>
   )
 }
 
+export { App }
 export default App

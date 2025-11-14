@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline – Evrolev</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #002855;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .container {
+      text-align: center;
+      max-width: 400px;
+    }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    p { margin-bottom: 1.5rem; opacity: 0.9; line-height: 1.6; }
+    button {
+      background: #ffd600;
+      color: #002855;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+    button:active { opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔌 Няма интернет</h1>
+    <p>Приложението работи офлайн, но нямате интернет връзка. Моля, проверете връзката си и опитайте отново.</p>
+    <button onclick="window.location.reload()">Опитай отново</button>
+  </div>
+</body>
+</html>
+
