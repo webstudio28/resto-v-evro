@@ -31,6 +31,10 @@ export function LandingPage() {
     }
   }, [])
 
+  const isDesktop = () => {
+    return window.matchMedia('(min-width: 1024px)').matches
+  }
+
   const handleDownload = async () => {
     // If install prompt is available, trigger it
     if (deferredPrompt) {
@@ -38,20 +42,24 @@ export function LandingPage() {
         await deferredPrompt.prompt()
         const { outcome } = await deferredPrompt.userChoice
         
-        if (outcome === 'accepted') {
-          // Installation started, wait a moment then show app
+        // Only redirect to app on desktop
+        if (outcome === 'accepted' && isDesktop()) {
+          // Installation started, wait a moment then show app (desktop only)
           setTimeout(() => {
             setShowApp(true)
           }, 1000)
-        } else {
-          // User dismissed, just show the app
+        } else if (outcome === 'dismissed' && isDesktop()) {
+          // User dismissed on desktop, show app
           setShowApp(true)
         }
+        // On mobile, don't redirect - let them use the installed app
         setDeferredPrompt(null)
       } catch (error) {
         console.error('Install prompt error:', error)
-        // Fallback: show app
-        setShowApp(true)
+        // Fallback: show app only on desktop
+        if (isDesktop()) {
+          setShowApp(true)
+        }
       }
     } else {
       // Check if iOS Safari
@@ -61,10 +69,11 @@ export function LandingPage() {
       if (isIOS && isSafari) {
         // Show iOS instructions
         setShowIOSInstructions(true)
-      } else {
-        // No install prompt available, just show app
+      } else if (isDesktop()) {
+        // No install prompt available, show app only on desktop
         setShowApp(true)
       }
+      // On mobile, stay on landing page if no install prompt
     }
   }
 
