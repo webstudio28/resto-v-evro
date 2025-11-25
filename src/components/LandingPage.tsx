@@ -70,6 +70,13 @@ export function LandingPage() {
   }
 
   const handleDownload = async () => {
+    // Check if already installed (standalone mode)
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      // Already installed, just show the app
+      setShowApp(true)
+      return
+    }
+
     // If install prompt is available, trigger it
     if (deferredPrompt) {
       try {
@@ -123,7 +130,7 @@ export function LandingPage() {
 
   if (showIOSInstructions) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-white dark:bg-black">
+      <div className="min-h-screen max-h-screen flex items-center justify-center px-4 bg-white dark:bg-black overflow-y-auto py-4">
         <div className="max-w-md w-full text-center space-y-6">
           <div className="space-y-4">
             <h2 className="text-2xl font-normal text-black dark:text-white">
@@ -147,7 +154,7 @@ export function LandingPage() {
   }
   if (showAndroidInstructions) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-white dark:bg-black">
+      <div className="min-h-screen max-h-screen flex items-center justify-center px-4 bg-white dark:bg-black overflow-y-auto py-4">
         <div className="max-w-md w-full text-center space-y-6">
           <div className="space-y-4">
             <h2 className="text-2xl font-normal text-black dark:text-white">
@@ -171,9 +178,9 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-4 bg-white dark:bg-black relative">
+    <div className="min-h-screen max-h-screen flex flex-col overflow-y-auto px-4 bg-white dark:bg-black relative">
       <div className="absolute inset-0 pointer-events-none bg-blue-500/20 dark:bg-blue-950/20" style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}></div>
-      <div className="pt-20 pb-8 relative z-10">
+      <div className="pt-20 pb-8 relative z-10 flex-shrink-0">
         <img
           src={isDark ? lightLogo : darkLogo}
           alt="webstudi28"
@@ -181,7 +188,7 @@ export function LandingPage() {
         />
       </div>
 
-      <div className="flex-1 flex items-center justify-center relative z-10">
+      <div className="flex-1 flex items-center justify-center relative z-10 min-h-0 py-4">
         <div className="max-w-md w-full text-center space-y-8">
           <div className="space-y-4">
             <p className="text-xl text-black dark:text-white">
@@ -209,7 +216,7 @@ export function LandingPage() {
         </div>
       </div>
 
-      <div className="py-8 relative z-10">
+      <div className="py-8 relative z-10 flex-shrink-0">
         <a
           href="https://www.webstudio28.com"
           target="_blank"
