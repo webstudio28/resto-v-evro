@@ -130,7 +130,7 @@ export function LandingPage() {
 
   if (showIOSInstructions) {
     return (
-      <div className="min-h-screen max-h-screen flex items-center justify-center px-4 bg-white dark:bg-black overflow-y-auto py-4">
+      <div className="h-screen flex items-center justify-center px-4 bg-white dark:bg-black overflow-y-auto py-4" style={{ height: '100dvh' }}>
         <div className="max-w-md w-full text-center space-y-6">
           <div className="space-y-4">
             <h2 className="text-2xl font-normal text-black dark:text-white">
@@ -154,7 +154,7 @@ export function LandingPage() {
   }
   if (showAndroidInstructions) {
     return (
-      <div className="min-h-screen max-h-screen flex items-center justify-center px-4 bg-white dark:bg-black overflow-y-auto py-4">
+      <div className="h-screen flex items-center justify-center px-4 bg-white dark:bg-black overflow-y-auto py-4" style={{ height: '100dvh' }}>
         <div className="max-w-md w-full text-center space-y-6">
           <div className="space-y-4">
             <h2 className="text-2xl font-normal text-black dark:text-white">
@@ -178,7 +178,7 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen max-h-screen flex flex-col overflow-y-auto px-4 bg-white dark:bg-black relative">
+    <div className="h-screen flex flex-col overflow-y-auto px-4 bg-white dark:bg-black relative" style={{ height: '100dvh' }}>
       <div className="absolute inset-0 pointer-events-none bg-blue-500/20 dark:bg-blue-950/20" style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}></div>
       <div className="pt-20 pb-8 relative z-10 flex-shrink-0">
         <img
