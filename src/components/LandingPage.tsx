@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { App } from '../App'
+import lightLogo from '../assets/light-logo.png'
+import darkLogo from '../assets/dark-logo-landing.png'
+import madeBy from '../assets/made-by.png'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -16,6 +19,7 @@ export function LandingPage() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showIOSInstructions, setShowIOSInstructions] = useState(false)
   const [showAndroidInstructions, setShowAndroidInstructions] = useState(false)
+  const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
     // Check if already installed
@@ -34,6 +38,30 @@ export function LandingPage() {
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    }
+  }, [])
+
+  useEffect(() => {
+    // Detect dark mode
+    const checkDarkMode = () => {
+      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
+      const hasDarkClass = document.documentElement.classList.contains('dark')
+      setIsDark(prefersDark || hasDarkClass)
+    }
+
+    checkDarkMode()
+
+    // Listen for theme changes
+    const mql = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches)
+    
+    if (typeof mql.addEventListener === 'function') {
+      mql.addEventListener('change', handler)
+      return () => mql.removeEventListener('change', handler)
+    } else {
+      // Fallback for older browsers
+      mql.addListener(handler)
+      return () => mql.removeListener(handler)
     }
   }, [])
 
@@ -95,21 +123,21 @@ export function LandingPage() {
 
   if (showIOSInstructions) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-navy-600 to-navy-800 dark:from-navy-800 dark:to-navy-900">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-white dark:bg-black">
         <div className="max-w-md w-full text-center space-y-6">
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-normal text-black dark:text-white">
               Как да инсталирате приложението
             </h2>
-            <div className="text-white/90 text-left space-y-3 bg-white/10 rounded-xl p-6 backdrop-blur">
-              <p className="font-medium">1. Натиснете бутона за споделяне <span className="text-yellow-400">□↑</span> в долната част на екрана</p>
-              <p className="font-medium">2. Изберете "Добави към началния екран"</p>
-              <p className="font-medium">3. Натиснете "Добави"</p>
+            <div className="text-black dark:text-white text-left space-y-3 border border-neutral-300 dark:border-neutral-700 p-6">
+              <p>1. Натиснете бутона за споделяне □↑ в долната част на екрана</p>
+              <p>2. Изберете "Добави към началния екран"</p>
+              <p>3. Натиснете "Добави"</p>
             </div>
           </div>
           <button
             onClick={() => setShowApp(true)}
-            className="w-full rounded-xl bg-yellow-400 hover:bg-yellow-500 text-navy-900 font-semibold px-8 py-4 text-lg transition-colors"
+            className="w-full rounded-xl bg-white dark:bg-black border border-black dark:border-white px-8 py-4 text-base"
           >
             Продължи без инсталация
           </button>
@@ -119,21 +147,21 @@ export function LandingPage() {
   }
   if (showAndroidInstructions) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-navy-600 to-navy-800 dark:from-navy-800 dark:to-navy-900">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-white dark:bg-black">
         <div className="max-w-md w-full text-center space-y-6">
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-normal text-black dark:text-white">
               Как да инсталирате приложението (Android)
             </h2>
-            <div className="text-white/90 text-left space-y-3 bg-white/10 rounded-xl p-6 backdrop-blur">
-              <p className="font-medium">1. Натиснете менюто ⋮ в горния десен ъгъл на Chrome</p>
-              <p className="font-medium">2. Изберете „Добави към началния екран“</p>
-              <p className="font-medium">3. Потвърдете с „Добави“</p>
+            <div className="text-black dark:text-white text-left space-y-3 border border-neutral-300 dark:border-neutral-700 p-6">
+              <p>1. Натиснете менюто ⋮ в горния десен ъгъл на Chrome</p>
+              <p>2. Изберете „Добави към началния екран"</p>
+              <p>3. Потвърдете с „Добави"</p>
             </div>
           </div>
           <button
             onClick={() => setShowApp(true)}
-            className="w-full rounded-xl bg-yellow-400 hover:bg-yellow-500 text-navy-900 font-semibold px-8 py-4 text-lg transition-colors"
+            className="w-full rounded-xl bg-white dark:bg-black border border-black dark:border-white px-8 py-4 text-base"
           >
             Продължи без инсталация
           </button>
@@ -143,33 +171,57 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-navy-600 to-navy-800 dark:from-navy-800 dark:to-navy-900">
-      <div className="max-w-md w-full text-center space-y-8">
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-white">
-            webstudi28
-          </h1>
-          <p className="text-xl text-white/90">
-            Малко приложение, което решава вашите големи проблеми с еврото
-          </p>
+    <div className="min-h-screen flex flex-col px-4 bg-white dark:bg-black relative">
+      <div className="absolute inset-0 pointer-events-none bg-blue-500/20 dark:bg-blue-950/20" style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}></div>
+      <div className="pt-20 pb-8 relative z-10">
+        <img
+          src={isDark ? lightLogo : darkLogo}
+          alt="webstudi28"
+          className="h-12 mx-auto"
+        />
+      </div>
+
+      <div className="flex-1 flex items-center justify-center relative z-10">
+        <div className="max-w-md w-full text-center space-y-8">
+          <div className="space-y-4">
+            <p className="text-xl text-black dark:text-white">
+              Бързо изчисляване на рестото при плащане в лева и евро
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <button
+              onClick={handleDownload}
+              className="w-full rounded-xl bg-black dark:bg-white text-white dark:text-black px-8 py-4 text-base"
+            >
+              Изтегли приложението
+            </button>
+            <button
+              onClick={() => setShowApp(true)}
+              className="w-full rounded-xl bg-white dark:bg-black border border-neutral-400 dark:border-neutral-600 px-8 py-3 text-base"
+            >
+              Продължи без инсталация
+            </button>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 pt-2">
+              Безплатно и без регистрация
+            </p>
+          </div>
         </div>
+      </div>
 
-        <button
-          onClick={handleDownload}
-          className="w-full rounded-xl bg-yellow-400 hover:bg-yellow-500 text-navy-900 font-semibold px-8 py-4 text-lg transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100"
+      <div className="py-8 relative z-10">
+        <a
+          href="https://www.webstudio28.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block"
         >
-          Изтегли приложението
-        </button>
-        <button
-          onClick={() => setShowApp(true)}
-          className="w-full rounded-xl border border-white/40 text-white font-medium px-8 py-3 text-base transition-colors hover:bg-white/10"
-        >
-          Продължи без инсталация
-        </button>
-
-        <p className="text-sm text-white/70">
-          Безплатно и без регистрация
-        </p>
+          <img
+            src={madeBy}
+            alt="Made by webstudio28"
+            className="h-12 mx-auto"
+          />
+        </a>
       </div>
     </div>
   )
