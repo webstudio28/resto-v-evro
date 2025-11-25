@@ -6,10 +6,16 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
+const isMobileDevice = () =>
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  )
+
 export function LandingPage() {
   const [showApp, setShowApp] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showIOSInstructions, setShowIOSInstructions] = useState(false)
+  const [showAndroidInstructions, setShowAndroidInstructions] = useState(false)
 
   useEffect(() => {
     // Check if already installed
@@ -32,7 +38,7 @@ export function LandingPage() {
   }, [])
 
   const isDesktop = () => {
-    return window.matchMedia('(min-width: 1024px)').matches
+    return !isMobileDevice()
   }
 
   const handleDownload = async () => {
@@ -42,23 +48,26 @@ export function LandingPage() {
         await deferredPrompt.prompt()
         const { outcome } = await deferredPrompt.userChoice
         
-        // Only redirect to app on desktop
-        if (outcome === 'accepted' && isDesktop()) {
-          // Installation started, wait a moment then show app (desktop only)
-          setTimeout(() => {
-            setShowApp(true)
-          }, 1000)
-        } else if (outcome === 'dismissed' && isDesktop()) {
-          // User dismissed on desktop, show app
-          setShowApp(true)
+        // Desktop behavior: open the web app after prompt interaction
+        if (isDesktop()) {
+          if (outcome === 'accepted' || outcome === 'dismissed') {
+            setTimeout(() => {
+              setShowApp(true)
+            }, 500)
+          }
+        } else {
+          // Mobile: if user dismissed, show manual instructions (Android)
+          if (outcome === 'dismissed') {
+            setShowAndroidInstructions(true)
+          }
         }
-        // On mobile, don't redirect - let them use the installed app
         setDeferredPrompt(null)
       } catch (error) {
         console.error('Install prompt error:', error)
-        // Fallback: show app only on desktop
         if (isDesktop()) {
           setShowApp(true)
+        } else {
+          setShowAndroidInstructions(true)
         }
       }
     } else {
@@ -69,11 +78,14 @@ export function LandingPage() {
       if (isIOS && isSafari) {
         // Show iOS instructions
         setShowIOSInstructions(true)
-      } else if (isDesktop()) {
+      } else if (isMobileDevice()) {
+        // Show Android instructions when install prompt isn't available
+        setShowAndroidInstructions(true)
+      } else {
         // No install prompt available, show app only on desktop
         setShowApp(true)
       }
-      // On mobile, stay on landing page if no install prompt
+      // On mobile, stay on landing page if no install prompt or show instructions
     }
   }
 
@@ -105,6 +117,30 @@ export function LandingPage() {
       </div>
     )
   }
+  if (showAndroidInstructions) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-navy-600 to-navy-800 dark:from-navy-800 dark:to-navy-900">
+        <div className="max-w-md w-full text-center space-y-6">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-white">
+              Как да инсталирате приложението (Android)
+            </h2>
+            <div className="text-white/90 text-left space-y-3 bg-white/10 rounded-xl p-6 backdrop-blur">
+              <p className="font-medium">1. Натиснете менюто ⋮ в горния десен ъгъл на Chrome</p>
+              <p className="font-medium">2. Изберете „Добави към началния екран“</p>
+              <p className="font-medium">3. Потвърдете с „Добави“</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowApp(true)}
+            className="w-full rounded-xl bg-yellow-400 hover:bg-yellow-500 text-navy-900 font-semibold px-8 py-4 text-lg transition-colors"
+          >
+            Продължи без инсталация
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-navy-600 to-navy-800 dark:from-navy-800 dark:to-navy-900">
@@ -123,6 +159,12 @@ export function LandingPage() {
           className="w-full rounded-xl bg-yellow-400 hover:bg-yellow-500 text-navy-900 font-semibold px-8 py-4 text-lg transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100"
         >
           Изтегли приложението
+        </button>
+        <button
+          onClick={() => setShowApp(true)}
+          className="w-full rounded-xl border border-white/40 text-white font-medium px-8 py-3 text-base transition-colors hover:bg-white/10"
+        >
+          Продължи без инсталация
         </button>
 
         <p className="text-sm text-white/70">

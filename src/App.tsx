@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { InstallPrompt } from './components/InstallPrompt'
+import lightLogo from './assets/light-logo.png'
+import darkLogo from './assets/dark-logo.png'
+import languageLight from './assets/language-light.png'
+import languageDark from './assets/language-dark.png'
+import themeLight from './assets/theme-light.png'
+import themeDark from './assets/theme-dark.png'
 
 type Language = 'en' | 'bg'
 
@@ -42,6 +48,8 @@ const translations: Record<Language, Record<string, string>> = {
     dark: 'Dark',
     showKeypad: 'Show keypad',
     hideKeypad: 'Hide keypad',
+    footerText: 'Website for your business? See',
+    clearAll: 'Clear all',
   },
   bg: {
     title: 'Калкулатор за преход към еврото',
@@ -64,6 +72,8 @@ const translations: Record<Language, Record<string, string>> = {
     dark: 'Тъмна',
     showKeypad: 'Покажи клавиатура',
     hideKeypad: 'Скрий клавиатура',
+    footerText: 'Уебсайт за вашия бизнес? Вижте',
+    clearAll: 'Изчисти всичко',
   },
 }
 
@@ -121,8 +131,8 @@ function App() {
   const [payBGNInput, setPayBGNInput] = useState('')
   const [payEURInput, setPayEURInput] = useState('')
 
-  type ActiveField = 'price' | 'bgn' | 'eur'
-  const [activeField, setActiveField] = useState<ActiveField>('price')
+  type ActiveField = 'price' | 'bgn' | 'eur' | null
+  const [activeField, setActiveField] = useState<ActiveField>(null)
 
   const priceEUR = clampToTwoDecimals(parseNumber(priceEURInput))
   const payBGN = clampToTwoDecimals(parseNumber(payBGNInput))
@@ -173,47 +183,70 @@ function App() {
     }
   }
 
-  return (
-    <div className="theme-transition min-h-screen flex items-center justify-center px-4 py-4">
-      <div
-        className="w-full max-w-[528px] rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm"
-        style={{
-          marginBottom: isDesktop
-            ? 0
-            : `calc(${keypadVisible ? '260px' : '56px'} + env(safe-area-inset-bottom, 0px))`,
-        }}
-      >
-        <div className="p-5">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-semibold text-black dark:text-white">{t.title}</h1>
-          <div className="flex items-center gap-2">
-            <select
-              aria-label={t.language}
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as Language)}
-              className="rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-black dark:text-white px-2 py-1 focus:outline-none"
-            >
-              <option value="en">EN</option>
-              <option value="bg">BG</option>
-            </select>
-            <select
-              aria-label={t.theme}
-              value={theme}
-              onChange={(e) => setTheme(e.target.value as 'light' | 'dark')}
-              className="rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-black dark:text-white px-2 py-1 focus:outline-none"
-            >
-              <option value="light">{t.light}</option>
-              <option value="dark">{t.dark}</option>
-            </select>
-          </div>
-        </div>
+  const isDark = theme === 'dark'
 
+  return (
+    <div
+      className={`theme-transition min-h-screen ${
+        isDark
+          ? 'bg-[#0a0a0a] md:bg-[#0a0a0a]'
+          : 'bg-white md:bg-gradient-to-b md:from-neutral-100 md:via-neutral-50 md:to-neutral-200'
+      }`}
+    >
+      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-4 md:px-4 md:py-6 lg:py-10">
+        <div className="flex flex-1 justify-center">
+          <div
+            className={`w-full max-w-[528px] md:rounded-xl md:border ${
+              isDark
+                ? 'md:border-neutral-800 md:bg-neutral-900 md:shadow-sm'
+                : 'md:border-neutral-200 md:bg-white md:shadow-sm'
+            }`}
+            style={{
+              marginBottom: isDesktop
+                ? 0
+                : `calc(${keypadVisible ? '260px' : '56px'} + env(safe-area-inset-bottom, 0px))`,
+            }}
+          >
+            <div className="p-4 md:p-5">
+              <div className={`flex items-center justify-between mb-4 pb-4 rounded-lg ${
+                isDark ? 'bg-neutral-800' : 'bg-neutral-100'
+              } px-4 pt-3 pb-2 -mx-4 md:-mx-5 md:px-3`}>
+                <img
+                  src={isDark ? lightLogo : darkLogo}
+                  alt="webstudi28"
+                  className="h-8"
+                />
+                <div className="flex flex-row items-center gap-3">
+                  <button
+                    onClick={() => setLanguage(language === 'bg' ? 'en' : 'bg')}
+                    aria-label={t.language}
+                    className="outline-none transition-opacity hover:opacity-80 active:opacity-60"
+                  >
+                    <img
+                      src={isDark ? languageDark : languageLight}
+                      alt={t.language}
+                      className="h-5 w-5"
+                    />
+                  </button>
+                  <button
+                    onClick={() => setTheme(isDark ? 'light' : 'dark')}
+                    aria-label={t.theme}
+                    className="outline-none transition-opacity hover:opacity-80 active:opacity-60"
+                  >
+                    <img
+                      src={isDark ? themeDark : themeLight}
+                      alt={t.theme}
+                      className="h-5 w-5"
+                    />
+                  </button>
+                </div>
+              </div>
         <div className="space-y-4">
           <div>
             <label className={`block text-sm mb-1 transition-colors duration-200 ${
               activeField === 'price' 
-                ? 'text-navy-700 dark:text-navy-300 font-medium' 
-                : 'text-neutral-700 dark:text-neutral-300'
+                ? 'text-navy-700 dark:text-neutral-200 font-medium' 
+                : 'text-neutral-700 dark:text-neutral-200'
             }`}>
               {t.productPrice}
             </label>
@@ -226,11 +259,11 @@ function App() {
               readOnly={!isDesktop}
               onFocus={() => setActiveField('price')}
               onClick={() => setActiveField('price')}
-              className={`w-full rounded-xl border px-3 py-2 focus:outline-none transition-colors duration-200 ${
+              className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
                 activeField === 'price'
-                  ? 'border-navy-500 dark:border-navy-400 bg-navy-50 dark:bg-navy-900/20'
-                  : 'border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800'
-              } text-black dark:text-white`}
+                  ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
+                  : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950'
+              } text-black dark:text-white text-lg`}
             />
           </div>
 
@@ -238,8 +271,8 @@ function App() {
             <div>
               <label className={`block text-sm mb-1 transition-colors duration-200 ${
                 activeField === 'bgn' 
-                  ? 'text-navy-700 dark:text-navy-300 font-medium' 
-                  : 'text-neutral-700 dark:text-neutral-300'
+                  ? 'text-navy-700 dark:text-neutral-200 font-medium' 
+                  : 'text-neutral-700 dark:text-neutral-200'
               }`}>
                 {t.paymentBGN}
               </label>
@@ -252,18 +285,18 @@ function App() {
                 readOnly={!isDesktop}
                 onFocus={() => setActiveField('bgn')}
                 onClick={() => setActiveField('bgn')}
-                className={`w-full rounded-xl border px-3 py-2 focus:outline-none transition-colors duration-200 ${
+                className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
                   activeField === 'bgn'
-                    ? 'border-navy-500 dark:border-navy-400 bg-navy-50 dark:bg-navy-900/20'
-                    : 'border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800'
-                } text-black dark:text-white`}
+                    ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
+                    : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950'
+                } text-black dark:text-white text-lg`}
               />
             </div>
             <div>
               <label className={`block text-sm mb-1 transition-colors duration-200 ${
                 activeField === 'eur' 
-                  ? 'text-navy-700 dark:text-navy-300 font-medium' 
-                  : 'text-neutral-700 dark:text-neutral-300'
+                  ? 'text-navy-700 dark:text-neutral-200 font-medium' 
+                  : 'text-neutral-700 dark:text-neutral-200'
               }`}>
                 {t.paymentEUR}
               </label>
@@ -276,23 +309,13 @@ function App() {
                 readOnly={!isDesktop}
                 onFocus={() => setActiveField('eur')}
                 onClick={() => setActiveField('eur')}
-                className={`w-full rounded-xl border px-3 py-2 focus:outline-none transition-colors duration-200 ${
+                className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
                   activeField === 'eur'
-                    ? 'border-navy-500 dark:border-navy-400 bg-navy-50 dark:bg-navy-900/20'
-                    : 'border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800'
-                } text-black dark:text-white`}
+                    ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
+                    : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950'
+                } text-black dark:text-white text-lg`}
               />
             </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-neutral-600 dark:text-neutral-400">{t.rate}: 1 EUR = {BGN_PER_EUR} BGN</span>
-            <button
-              onClick={handleClear}
-              className="rounded-xl border border-neutral-400 dark:border-neutral-600 px-3 py-1 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800"
-            >
-              {t.clear}
-            </button>
           </div>
 
           {!isSufficient && priceEUR > 0 && (
@@ -301,24 +324,56 @@ function App() {
             </div>
           )}
 
-          <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-3">
+          <div className={`rounded-xl border-2 ${
+            isDark 
+              ? 'border-blue-500/30 bg-blue-950/20' 
+              : 'border-blue-100 bg-blue-30/50'
+          } px-4 py-4 shadow-sm`}>
             <div className="flex items-baseline justify-between">
-              <span className="text-neutral-600 dark:text-neutral-400 text-sm">{t.changeDue}</span>
-              <span className="text-3xl font-semibold text-black dark:text-white">€ {formatMoney(changeEUR)}</span>
+              <span className="text-neutral-600 dark:text-neutral-400 text-xs">{t.changeDue}</span>
+              <span className="text-2xl font-bold text-black dark:text-white">€ {formatMoney(changeEUR)}</span>
             </div>
           </div>
 
-          <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3">
-            <div className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">{t.breakdown}</div>
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.price}</span><span>€ {formatMoney(priceEUR)}</span></div>
-              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.paid} (EUR)</span><span>€ {formatMoney(payEUR)}</span></div>
-              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.paid} (BGN)</span><span>лв {formatMoney(payBGN)}</span></div>
-              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.bgnToEur}</span><span>€ {formatMoney(payBGNtoEUR)}</span></div>
-              <div className="border-t border-neutral-200 dark:border-neutral-800 my-2" />
-              <div className="flex justify-between font-medium"><span className="text-neutral-700 dark:text-neutral-300">{t.totalPaid}</span><span>€ {formatMoney(totalPaidEUR)}</span></div>
+          <div className="flex items-center justify-end">
+            <button
+              onClick={handleClear}
+              className="rounded-xl border border-neutral-400 dark:border-neutral-600 px-3 py-1 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+            >
+              {t.clear}
+            </button>
+          </div>
+
+          <div className={`rounded-xl border ${
+            isDark ? 'border-neutral-800 bg-neutral-900' : 'border-neutral-200 bg-white'
+          } p-3`}>
+            <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">{t.breakdown}</div>
+            <div className="text-xs text-neutral-600 dark:text-neutral-400 mb-2">{t.rate}: 1 EUR = {BGN_PER_EUR} BGN</div>
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.price}</span><span className="text-black dark:text-white font-semibold">€ {formatMoney(priceEUR)}</span></div>
+              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.paid} (EUR)</span><span className="text-black dark:text-white font-semibold">€ {formatMoney(payEUR)}</span></div>
+              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.paid} (BGN)</span><span className="text-black dark:text-white font-semibold">лв {formatMoney(payBGN)}</span></div>
+              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.bgnToEur}</span><span className="text-black dark:text-white font-semibold">€ {formatMoney(payBGNtoEUR)}</span></div>
+              <div className={`border-t my-2 ${isDark ? 'border-neutral-800' : 'border-neutral-200'}`} />
+              <div className="flex justify-between font-bold mt-1"><span className="text-neutral-700 dark:text-neutral-300">{t.totalPaid}</span><span className="text-black dark:text-white">€ {formatMoney(totalPaidEUR)}</span></div>
             </div>
           </div>
+
+          {/* Footer link */}
+          <div className="mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+            <p className="text-xs text-center text-neutral-500 dark:text-neutral-500">
+              {t.footerText}{' '}
+              <a
+                href="https://www.webstudio28.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-neutral-700 dark:text-neutral-300 hover:underline"
+              >
+                webstudio28.com
+              </a>
+            </p>
+          </div>
+        </div>
         </div>
         </div>
       </div>
@@ -329,72 +384,99 @@ function App() {
           <div className="px-4">
           {!keypadVisible ? (
             <div
-              className="mb-4 rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white/95 dark:bg-neutral-900/95 backdrop-blur px-3 py-2 shadow-sm flex items-center justify-between"
-              style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 4px)' }}
+              className={`mb-4 rounded-xl border ${
+                isDark ? 'border-neutral-600 bg-neutral-900' : 'border-transparent bg-neutral-800'
+              } px-3 shadow-sm flex items-center justify-between`}
+              style={{ 
+                paddingTop: 'calc(env(safe-area-inset-top, 0px) + 14px)',
+                paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 14px)',
+              }}
             >
-              <span className="text-sm text-neutral-700 dark:text-neutral-300">{t.showKeypad}</span>
+              <span className={`text-sm ${
+                isDark ? 'text-neutral-300' : 'text-white'
+              }`}>{t.showKeypad}</span>
               <button
                 onClick={() => setKeypadVisible(true)}
                 aria-label={t.showKeypad}
                 title={t.showKeypad}
-                className="text-sm rounded-xl border border-neutral-400 dark:border-neutral-600 px-3 py-1"
+                className={`text-sm rounded-xl border px-3 py-1 ${
+                  isDark 
+                    ? 'border-neutral-600 text-neutral-300' 
+                    : 'border-white/30 text-white'
+                }`}
               >
                 ▲
               </button>
             </div>
           ) : (
             <div
-              className="mb-4 bg-gray-50 rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white/95 dark:bg-neutral-900/95 backdrop-blur px-3 pt-3 pb-2 shadow-md"
+              className={`mb-4 rounded-xl border ${
+                isDark ? 'border-neutral-600 bg-neutral-900' : 'border-neutral-400 bg-white'
+              } px-3 pt-3 pb-2 shadow-sm`}
               style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 8px)' }}
             >
               <div className="flex items-center justify-end mb-2">
-                <div className="flex items-center gap-2">
-                  <button onClick={handleClear} className="text-xs rounded-xl border border-neutral-400 dark:border-neutral-600 px-2 py-1 text-neutral-700 dark:text-neutral-300">{t.clear}</button>
-                  <button
-                    onClick={() => setKeypadVisible(false)}
-                    aria-label={t.hideKeypad}
-                    title={t.hideKeypad}
-                    className="text-xs rounded-xl border border-neutral-400 dark:border-neutral-600 px-2 py-1 text-neutral-700 dark:text-neutral-300"
-                  >
-                    ▼
-                  </button>
-                </div>
+                <button
+                  onClick={() => setKeypadVisible(false)}
+                  aria-label={t.hideKeypad}
+                  title={t.hideKeypad}
+                  className="text-xs rounded-xl border border-neutral-400 dark:border-neutral-600 px-2 py-1 text-neutral-700 dark:text-neutral-300"
+                >
+                  ▼
+                </button>
               </div>
               <div className="grid grid-cols-3 gap-2 select-none">
                 {(['1','2','3','4','5','6','7','8','9'] as const).map(k => (
-                                  <button
-                  key={k}
-                  onClick={() => onKeypadPress(k)}
-                  className="h-12 rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-lg font-medium text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-navy-100 dark:active:bg-navy-800 active:border-navy-300 dark:active:border-navy-600"
-                >
-                  {k}
-                </button>
+                  <button
+                    key={k}
+                    onClick={() => onKeypadPress(k)}
+                    className={`h-12 rounded-xl border ${
+                      isDark ? 'border-neutral-600 bg-neutral-950' : 'border-neutral-400 bg-white'
+                    } text-lg font-semibold text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-neutral-100 dark:active:bg-neutral-800`}
+                  >
+                    {k}
+                  </button>
                 ))}
                 <button 
                   onClick={() => onKeypadPress('decimal')} 
-                  className="h-12 rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-lg font-medium text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-navy-100 dark:active:bg-navy-800 active:border-navy-300 dark:active:border-navy-600"
+                  className={`h-12 rounded-xl border ${
+                    isDark ? 'border-neutral-600 bg-neutral-950' : 'border-neutral-400 bg-white'
+                  } text-lg font-semibold text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-neutral-100 dark:active:bg-neutral-800`}
                 >
                   {decimalChar}
                 </button>
                 <button 
                   onClick={() => onKeypadPress('0')} 
-                  className="h-12 rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-lg font-medium text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-navy-100 dark:active:bg-navy-800 active:border-navy-300 dark:active:border-navy-600"
+                  className={`h-12 rounded-xl border ${
+                    isDark ? 'border-neutral-600 bg-neutral-950' : 'border-neutral-400 bg-white'
+                  } text-lg font-semibold text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-neutral-100 dark:active:bg-neutral-800`}
                 >
                   0
                 </button>
                 <button 
                   onClick={() => onKeypadPress('backspace')} 
-                  className="h-12 rounded-xl border border-neutral-400 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-lg font-medium text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-navy-100 dark:active:bg-navy-800 active:border-navy-300 dark:active:border-navy-600"
+                  className={`h-12 rounded-xl border ${
+                    isDark ? 'border-neutral-600 bg-neutral-950' : 'border-neutral-400 bg-white'
+                  } text-lg font-semibold text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-neutral-100 dark:active:bg-neutral-800`}
                 >
                   ⌫
                 </button>
               </div>
+              <button
+                onClick={handleClear}
+                className={`w-full mt-2 h-12 rounded-xl border ${
+                  isDark ? 'border-neutral-600 bg-neutral-800' : 'border-neutral-400 bg-neutral-100'
+                } text-base font-semibold text-black dark:text-white transition-all duration-150 active:scale-[0.95] active:bg-neutral-200 dark:active:bg-neutral-700`}
+              >
+                {t.clearAll}
+              </button>
             </div>
           )}
           </div>
         </div>
       </div>
       <InstallPrompt />
+      </div>
     </div>
   )
 }
