@@ -106,12 +106,11 @@ export function LandingPage() {
         }
       }
     } else {
-      // Check if iOS Safari
+      // Check if iOS (any browser on iOS)
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
       
-      if (isIOS && isSafari) {
-        // Show iOS instructions
+      if (isIOS) {
+        // Show iOS instructions (works for Safari, Chrome, and other browsers on iOS)
         setShowIOSInstructions(true)
       } else if (isMobileDevice()) {
         // Show Android instructions when install prompt isn't available
