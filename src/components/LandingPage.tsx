@@ -19,6 +19,7 @@ export function LandingPage() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(globalDeferredPrompt)
   const [showIOSModal, setShowIOSModal] = useState(false)
   const [showAndroidSuccessModal, setShowAndroidSuccessModal] = useState(false)
+  const [showProblemsModal, setShowProblemsModal] = useState(false)
   const [isDark, setIsDark] = useState(false)
 
   // Check if already installed on initial load
@@ -179,43 +180,44 @@ export function LandingPage() {
   return (
     <div className="h-screen flex flex-col overflow-y-auto px-4 bg-white dark:bg-black relative" style={{ height: '100dvh' }}>
       <div className="absolute inset-0 pointer-events-none bg-blue-500/20 dark:bg-blue-950/20" style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}></div>
-      <div className="pt-20 pb-8 relative z-10 flex-shrink-0">
-        <img
-          src={isDark ? lightLogo : darkLogo}
-          alt="webstudi28"
-          className="h-12 mx-auto"
-        />
-      </div>
 
-      <div className="flex-1 flex items-center justify-center relative z-10 min-h-0 py-4">
-        <div className="max-w-md w-full text-center space-y-8">
+      <div className="flex-1 flex items-center justify-center relative z-10 min-h-0">
+        <div className="max-w-md w-full text-center space-y-0">
+          <img
+            src={isDark ? lightLogo : darkLogo}
+            alt="webstudi28"
+            className="h-12 mx-auto"
+          />
           <div className="space-y-4">
-            <p className="text-xl text-black dark:text-white">
-              Бързо изчисляване на рестото при плащане в лева и евро
+            <p className="text-sm text-gray-700 dark:text-white px-4">
+             Бързо изчисляване на рестото при плащане в лева и евро.
             </p>
+            <button
+              onClick={() => setShowProblemsModal(true)}
+              className="text-xs text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 underline underline-offset-2"
+            >
+              Какви проблеми решава
+            </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 pt-8">
             <button
               onClick={handleContinueWithoutInstall}
-              className="w-full rounded-xl bg-black dark:bg-white text-white dark:text-black px-8 py-4 text-base"
+              className=" rounded-3xl bg-black dark:bg-white text-white dark:text-black px-6 py-3 text-sm"
             >
-              Продължи без инсталация
+              Използвай безплатно
             </button>
-            <button
-              onClick={handleDownload}
-              className="w-full rounded-xl bg-white dark:bg-black border border-neutral-400 dark:border-neutral-600 px-8 py-3 text-base"
-            >
-              Изтегли приложението
-            </button>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 pt-2">
-              Безплатно и без регистрация
-            </p>
           </div>
         </div>
       </div>
 
-      <div className="py-8 relative z-10 flex-shrink-0">
+      <div className="py-8 relative z-10 flex-shrink-0 space-y-4">
+        <button
+          onClick={handleDownload}
+          className="text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 px-4 py-1.5 rounded-full border border-neutral-300 dark:border-neutral-600 hover:border-neutral-400 dark:hover:border-neutral-500 bg-white dark:bg-black transition-colors mx-auto block"
+        >
+          Изтегли приложението
+        </button>
         <a
           href="https://www.webstudio28.com"
           target="_blank"
@@ -242,6 +244,43 @@ export function LandingPage() {
         appName="resto26"
         isMobile={isMobileDevice()}
       />
+      {showProblemsModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+          onClick={() => setShowProblemsModal(false)}
+        >
+          <div
+            className="bg-white dark:bg-black border border-neutral-300 dark:border-neutral-700 max-w-md w-full p-6 space-y-4 rounded-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="space-y-3">
+              <h3 className="text-lg font-medium text-black dark:text-white">
+                Автоматично пресмятане на:
+              </h3>
+              <ul className="space-y-2 text-sm text-black dark:text-white">
+                <li className="flex items-start">
+                  <span className="mr-2">1.</span>
+                  <span>Плащане в лева, но рестото е в евро</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">2.</span>
+                  <span>Плащане комбинирано от лева и евро, но рестото е в евро</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">3.</span>
+                  <span>В касата няма достатъчно евро, затова рестото е в лева</span>
+                </li>
+              </ul>
+            </div>
+            <button
+              onClick={() => setShowProblemsModal(false)}
+              className="w-full rounded-xl bg-white dark:bg-black border border-neutral-400 dark:border-neutral-600 px-8 py-3 text-base"
+            >
+              Затвори
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
