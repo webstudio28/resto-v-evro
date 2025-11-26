@@ -10,7 +10,6 @@ import themeDark from './assets/theme-dark.png'
 
 type Language = 'en' | 'bg'
 
-const EUR_PER_BGN = 1 / 1.95583
 const BGN_PER_EUR = 1.95583
 
 function formatMoney(value: number): string {
@@ -135,12 +134,14 @@ function App() {
 
   type ActiveField = 'price' | 'bgn' | 'eur' | null
   const [activeField, setActiveField] = useState<ActiveField>(null)
+  const [changeInBGN, setChangeInBGN] = useState(false)
 
   const priceEUR = clampToTwoDecimals(parseNumber(priceEURInput))
   const payBGN = clampToTwoDecimals(parseNumber(payBGNInput))
   const payEUR = clampToTwoDecimals(parseNumber(payEURInput))
 
-  const payBGNtoEUR = clampToTwoDecimals(payBGN * EUR_PER_BGN)
+  // Convert BGN to EUR using exact division (1 EUR = 1.95583 BGN)
+  const payBGNtoEUR = clampToTwoDecimals(payBGN / BGN_PER_EUR)
   const totalPaidEUR = clampToTwoDecimals(payEUR + payBGNtoEUR)
   const changeEURRaw = clampToTwoDecimals(totalPaidEUR - priceEUR)
   const isSufficient = totalPaidEUR >= priceEUR || priceEUR === 0
@@ -354,8 +355,34 @@ function App() {
               : 'border-blue-100 bg-blue-30/50'
           } px-4 py-4 shadow-sm`}>
             <div className="flex items-baseline justify-between">
-              <span className="text-neutral-600 dark:text-neutral-400 text-xs">{t.changeDue}</span>
-              <span className="text-2xl font-bold text-black dark:text-white">€ {formatMoney(changeEUR)}</span>
+              <span className="text-neutral-600 dark:text-neutral-400 text-xs">
+                {changeInBGN ? t.changeDue.replace('(EUR)', '(BGN)') : t.changeDue}
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-black dark:text-white">
+                  {changeInBGN ? `${formatMoney(changeEUR * BGN_PER_EUR)} лв` : `€ ${formatMoney(changeEUR)}`}
+                </span>
+                <button
+                  onClick={() => setChangeInBGN(!changeInBGN)}
+                  className="outline-none transition-opacity hover:opacity-80 active:opacity-60 rounded-full p-1.5 border border-neutral-700 dark:border-neutral-500 shadow-sm"
+                  aria-label="Toggle currency"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-4 h-4 text-neutral-700 dark:text-neutral-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -377,9 +404,17 @@ function App() {
               <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.price}</span><span className="text-black dark:text-white font-semibold">€ {formatMoney(priceEUR)}</span></div>
               <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.paid} (EUR)</span><span className="text-black dark:text-white font-semibold">€ {formatMoney(payEUR)}</span></div>
               <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.paid} (BGN)</span><span className="text-black dark:text-white font-semibold">лв {formatMoney(payBGN)}</span></div>
-              <div className="flex justify-between"><span className="text-neutral-600 dark:text-neutral-400">{t.bgnToEur}</span><span className="text-black dark:text-white font-semibold">€ {formatMoney(payBGNtoEUR)}</span></div>
               <div className={`border-t my-2 ${isDark ? 'border-neutral-800' : 'border-neutral-200'}`} />
               <div className="flex justify-between font-bold mt-1"><span className="text-neutral-700 dark:text-neutral-300">{t.totalPaid}</span><span className="text-black dark:text-white">€ {formatMoney(totalPaidEUR)}</span></div>
+              <div className={`border-t my-2 ${isDark ? 'border-neutral-800' : 'border-neutral-200'}`} />
+              <div className="flex justify-between font-bold mt-1">
+                <span className="text-neutral-700 dark:text-neutral-300">
+                  {changeInBGN ? t.changeDue.replace('(EUR)', '(BGN)') : t.changeDue}
+                </span>
+                <span className="text-black dark:text-white">
+                  {changeInBGN ? `${formatMoney(changeEUR * BGN_PER_EUR)} лв` : `€ ${formatMoney(changeEUR)}`}
+                </span>
+              </div>
             </div>
           </div>
 
