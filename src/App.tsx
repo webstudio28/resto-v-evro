@@ -126,7 +126,7 @@ function App() {
   const t = useMemo(() => translations[language], [language])
   const [theme, setTheme] = useTheme()
   const isDesktop = useIsDesktop()
-  const [keypadVisible, setKeypadVisible] = useState<boolean>(true)
+  const [keypadVisible, setKeypadVisible] = useState<boolean>(false)
 
   const [priceEURInput, setPriceEURInput] = useState('')
   const [payBGNInput, setPayBGNInput] = useState('')
@@ -282,8 +282,14 @@ function App() {
               value={priceEURInput}
               onChange={(e) => setPriceEURInput(e.target.value)}
               readOnly={!isDesktop}
-              onFocus={() => setActiveField('price')}
-              onClick={() => setActiveField('price')}
+              onFocus={() => {
+                setActiveField('price')
+                if (!keypadVisible) setKeypadVisible(true)
+              }}
+              onClick={() => {
+                setActiveField('price')
+                if (!keypadVisible) setKeypadVisible(true)
+              }}
               className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
                 activeField === 'price'
                   ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
@@ -308,8 +314,14 @@ function App() {
                 value={payBGNInput}
                 onChange={(e) => setPayBGNInput(e.target.value)}
                 readOnly={!isDesktop}
-                onFocus={() => setActiveField('bgn')}
-                onClick={() => setActiveField('bgn')}
+                onFocus={() => {
+                  setActiveField('bgn')
+                  if (!keypadVisible) setKeypadVisible(true)
+                }}
+                onClick={() => {
+                  setActiveField('bgn')
+                  if (!keypadVisible) setKeypadVisible(true)
+                }}
                 className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
                   activeField === 'bgn'
                     ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
@@ -332,8 +344,14 @@ function App() {
                 value={payEURInput}
                 onChange={(e) => setPayEURInput(e.target.value)}
                 readOnly={!isDesktop}
-                onFocus={() => setActiveField('eur')}
-                onClick={() => setActiveField('eur')}
+                onFocus={() => {
+                  setActiveField('eur')
+                  if (!keypadVisible) setKeypadVisible(true)
+                }}
+                onClick={() => {
+                  setActiveField('eur')
+                  if (!keypadVisible) setKeypadVisible(true)
+                }}
                 className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
                   activeField === 'eur'
                     ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
@@ -440,38 +458,15 @@ function App() {
       {/* Mobile on-screen numeric keypad with hide/show, constrained to 528px */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-center">
         <div className="w-full max-w-[528px]">
-          <div className="px-4">
-          {!keypadVisible ? (
+          <div className="px-4 relative overflow-hidden">
             <div
-              className={`mb-4 rounded-xl border ${
-                isDark ? 'border-neutral-600 bg-neutral-900' : 'border-transparent bg-neutral-800'
-              } px-3 shadow-sm flex items-center justify-between`}
-              style={{ 
-                paddingTop: 'calc(env(safe-area-inset-top, 0px) + 14px)',
-                paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 14px)',
-              }}
-            >
-              <span className={`text-sm ${
-                isDark ? 'text-neutral-300' : 'text-white'
-              }`}>{t.showKeypad}</span>
-              <button
-                onClick={() => setKeypadVisible(true)}
-                aria-label={t.showKeypad}
-                title={t.showKeypad}
-                className={`text-sm rounded-xl border px-3 py-1 ${
-                  isDark 
-                    ? 'border-neutral-600 text-neutral-300' 
-                    : 'border-white/30 text-white'
-                }`}
-              >
-                ▲
-              </button>
-            </div>
-          ) : (
-            <div
-              className={`mb-4 rounded-xl border ${
+              className={`mb-4 rounded-xl border transition-all duration-700 ease-in-out ${
                 isDark ? 'border-neutral-600 bg-neutral-900' : 'border-neutral-400 bg-white'
-              } px-3 pt-3 pb-2 shadow-sm`}
+              } px-3 pt-3 pb-2 shadow-sm ${
+                !keypadVisible 
+                  ? 'opacity-0 pointer-events-none transform translate-y-full max-h-0 overflow-hidden mb-0' 
+                  : 'opacity-100 transform translate-y-0 max-h-[500px]'
+              }`}
               style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 8px)' }}
             >
               <div className="flex items-center justify-end mb-2">
@@ -530,7 +525,6 @@ function App() {
                 {t.clearAll}
               </button>
             </div>
-          )}
           </div>
         </div>
       </div>
