@@ -11,9 +11,12 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
+// Store deferred prompt globally so it persists across navigation
+let globalDeferredPrompt: BeforeInstallPromptEvent | null = null
+
 export function LandingPage() {
   const navigate = useNavigate()
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(globalDeferredPrompt)
   const [showIOSModal, setShowIOSModal] = useState(false)
   const [showAndroidSuccessModal, setShowAndroidSuccessModal] = useState(false)
   const [isDark, setIsDark] = useState(false)
@@ -41,10 +44,17 @@ export function LandingPage() {
   }, [navigate])
 
   useEffect(() => {
+    // Check if we already have a stored prompt
+    if (globalDeferredPrompt && !deferredPrompt) {
+      setDeferredPrompt(globalDeferredPrompt)
+    }
+
     // Listen for install prompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
-      setDeferredPrompt(e as BeforeInstallPromptEvent)
+      const promptEvent = e as BeforeInstallPromptEvent
+      globalDeferredPrompt = promptEvent
+      setDeferredPrompt(promptEvent)
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
@@ -52,7 +62,7 @@ export function LandingPage() {
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     }
-  }, [])
+  }, [deferredPrompt])
 
   useEffect(() => {
     // Detect dark mode
@@ -94,6 +104,10 @@ export function LandingPage() {
         await deferredPrompt.prompt()
         const { outcome } = await deferredPrompt.userChoice
         
+        // Clear the prompt after use (it can only be used once)
+        globalDeferredPrompt = null
+        setDeferredPrompt(null)
+        
         if (outcome === 'accepted') {
           // Installation accepted - store flag and show success modal
           // The flag helps detect installation even if page reloads
@@ -101,9 +115,11 @@ export function LandingPage() {
           setShowAndroidSuccessModal(true)
         }
         // If dismissed, user stays on landing page (no modal)
-        setDeferredPrompt(null)
       } catch (error) {
         console.error('Install prompt error:', error)
+        // Clear on error too
+        globalDeferredPrompt = null
+        setDeferredPrompt(null)
       }
     } else {
       // No install prompt available
