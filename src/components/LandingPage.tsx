@@ -1,33 +1,46 @@
 import { useState, useEffect } from 'react'
-import { App } from '../App'
+import { useNavigate } from 'react-router-dom'
 import lightLogo from '../assets/light-logo.png'
 import darkLogo from '../assets/dark-logo-landing.png'
 import madeBy from '../assets/made-by.png'
+import { IOSModal } from './IOSModal'
+import { AndroidSuccessModal } from './AndroidSuccessModal'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
-const isMobileDevice = () =>
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent,
-  )
-
 export function LandingPage() {
-  const [showApp, setShowApp] = useState(false)
+  const navigate = useNavigate()
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [showIOSInstructions, setShowIOSInstructions] = useState(false)
-  const [showAndroidInstructions, setShowAndroidInstructions] = useState(false)
+  const [showIOSModal, setShowIOSModal] = useState(false)
+  const [showAndroidSuccessModal, setShowAndroidSuccessModal] = useState(false)
   const [isDark, setIsDark] = useState(false)
 
+  // Check if already installed
   useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setShowApp(true)
-      return
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    
+    if (isStandalone) {
+      // Check if we just installed (stored in sessionStorage)
+      const justInstalled = sessionStorage.getItem('justInstalled') === 'true'
+      
+      if (justInstalled) {
+        // Show success modal and clear the flag
+        setShowAndroidSuccessModal(true)
+        sessionStorage.removeItem('justInstalled')
+      } else {
+        // Already installed, redirect to app
+        const currentPath = window.location.pathname
+        if (currentPath === '/' || currentPath === '') {
+          navigate('/app', { replace: true })
+        }
+      }
     }
+  }, [navigate])
 
+  useEffect(() => {
     // Listen for install prompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
@@ -65,116 +78,45 @@ export function LandingPage() {
     }
   }, [])
 
-  const isDesktop = () => {
-    return !isMobileDevice()
-  }
-
   const handleDownload = async () => {
-    // Check if already installed (standalone mode)
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      // Already installed, just show the app
-      setShowApp(true)
+    // Check if iOS (any browser on iOS)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+
+    if (isIOS) {
+      // Show iOS modal
+      setShowIOSModal(true)
       return
     }
 
-    // If install prompt is available, trigger it
+    // If install prompt is available (Android/Desktop), trigger it
     if (deferredPrompt) {
       try {
         await deferredPrompt.prompt()
         const { outcome } = await deferredPrompt.userChoice
         
-        // Desktop behavior: open the web app after prompt interaction
-        if (isDesktop()) {
-          if (outcome === 'accepted' || outcome === 'dismissed') {
-            setTimeout(() => {
-              setShowApp(true)
-            }, 500)
-          }
-        } else {
-          // Mobile: if user dismissed, show manual instructions (Android)
-          if (outcome === 'dismissed') {
-            setShowAndroidInstructions(true)
-          }
+        if (outcome === 'accepted') {
+          // Installation accepted - store flag and show success modal
+          // The flag helps detect installation even if page reloads
+          sessionStorage.setItem('justInstalled', 'true')
+          setShowAndroidSuccessModal(true)
         }
+        // If dismissed, user stays on landing page (no modal)
         setDeferredPrompt(null)
       } catch (error) {
         console.error('Install prompt error:', error)
-        if (isDesktop()) {
-          setShowApp(true)
-        } else {
-          setShowAndroidInstructions(true)
-        }
       }
     } else {
-      // Check if iOS (any browser on iOS)
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-      
-      if (isIOS) {
-        // Show iOS instructions (works for Safari, Chrome, and other browsers on iOS)
-        setShowIOSInstructions(true)
-      } else if (isMobileDevice()) {
-        // Show Android instructions when install prompt isn't available
-        setShowAndroidInstructions(true)
-      } else {
-        // No install prompt available, show app only on desktop
-        setShowApp(true)
-      }
-      // On mobile, stay on landing page if no install prompt or show instructions
+      // No install prompt available
+      // On mobile (Android without prompt), stay on landing page
+      // On desktop, user can install from browser menu, so stay on landing page too
+      // Don't auto-navigate to app
     }
   }
 
-  if (showApp) {
-    return <App />
+  const handleContinueWithoutInstall = () => {
+    navigate('/app')
   }
 
-  if (showIOSInstructions) {
-    return (
-      <div className="h-screen flex items-center justify-center px-4 bg-white dark:bg-black overflow-y-auto py-4" style={{ height: '100dvh' }}>
-        <div className="max-w-md w-full text-center space-y-6">
-          <div className="space-y-4">
-            <h2 className="text-2xl font-normal text-black dark:text-white">
-              Как да инсталирате приложението
-            </h2>
-            <div className="text-black dark:text-white text-left space-y-3 border border-neutral-300 dark:border-neutral-700 p-6">
-              <p>1. Натиснете бутона за споделяне □↑ в долната част на екрана</p>
-              <p>2. Изберете "Добави към началния екран"</p>
-              <p>3. Натиснете "Добави"</p>
-            </div>
-          </div>
-          <button
-            onClick={() => setShowApp(true)}
-            className="w-full rounded-xl bg-white dark:bg-black border border-black dark:border-white px-8 py-4 text-base"
-          >
-            Продължи без инсталация
-          </button>
-        </div>
-      </div>
-    )
-  }
-  if (showAndroidInstructions) {
-    return (
-      <div className="h-screen flex items-center justify-center px-4 bg-white dark:bg-black overflow-y-auto py-4" style={{ height: '100dvh' }}>
-        <div className="max-w-md w-full text-center space-y-6">
-          <div className="space-y-4">
-            <h2 className="text-2xl font-normal text-black dark:text-white">
-              Как да инсталирате приложението (Android)
-            </h2>
-            <div className="text-black dark:text-white text-left space-y-3 border border-neutral-300 dark:border-neutral-700 p-6">
-              <p>1. Натиснете менюто ⋮ в горния десен ъгъл на Chrome</p>
-              <p>2. Изберете „Добави към началния екран"</p>
-              <p>3. Потвърдете с „Добави"</p>
-            </div>
-          </div>
-          <button
-            onClick={() => setShowApp(true)}
-            className="w-full rounded-xl bg-white dark:bg-black border border-black dark:border-white px-8 py-4 text-base"
-          >
-            Продължи без инсталация
-          </button>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="h-screen flex flex-col overflow-y-auto px-4 bg-white dark:bg-black relative" style={{ height: '100dvh' }}>
@@ -203,7 +145,7 @@ export function LandingPage() {
               Изтегли приложението
             </button>
             <button
-              onClick={() => setShowApp(true)}
+              onClick={handleContinueWithoutInstall}
               className="w-full rounded-xl bg-white dark:bg-black border border-neutral-400 dark:border-neutral-600 px-8 py-3 text-base"
             >
               Продължи без инсталация
@@ -229,6 +171,18 @@ export function LandingPage() {
           />
         </a>
       </div>
+
+      {/* Modals */}
+      <IOSModal
+        isOpen={showIOSModal}
+        onClose={() => setShowIOSModal(false)}
+        onContinue={handleContinueWithoutInstall}
+      />
+      <AndroidSuccessModal
+        isOpen={showAndroidSuccessModal}
+        onClose={() => setShowAndroidSuccessModal(false)}
+        appName="resto26"
+      />
     </div>
   )
 }

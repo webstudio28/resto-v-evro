@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { InstallPrompt } from './components/InstallPrompt'
 import lightLogo from './assets/light-logo.png'
 import darkLogo from './assets/dark-logo.png'
@@ -121,6 +122,7 @@ function useIsDesktop(): boolean {
 }
 
 function App() {
+  const navigate = useNavigate()
   const [language, setLanguage] = useState<Language>('bg')
   const t = useMemo(() => translations[language], [language])
   const [theme, setTheme] = useTheme()
@@ -211,11 +213,33 @@ function App() {
               <div className={`flex items-center justify-between mb-4 pb-4 rounded-lg ${
                 isDark ? 'bg-neutral-800' : 'bg-neutral-100'
               } px-4 pt-3 pb-2 -mx-4 md:-mx-5 md:px-3`}>
-                <img
-                  src={isDark ? lightLogo : darkLogo}
-                  alt="webstudi28"
-                  className="h-8"
-                />
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => navigate('/')}
+                    aria-label="Back"
+                    className="outline-none transition-opacity hover:opacity-80 active:opacity-60 text-black dark:text-white"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 19.5L8.25 12l7.5-7.5"
+                      />
+                    </svg>
+                  </button>
+                  <img
+                    src={isDark ? lightLogo : darkLogo}
+                    alt="webstudi28"
+                    className="h-8"
+                  />
+                </div>
                 <div className="flex flex-row items-center gap-3">
                   <button
                     onClick={() => setLanguage(language === 'bg' ? 'en' : 'bg')}
