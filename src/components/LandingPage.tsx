@@ -21,7 +21,7 @@ export function LandingPage() {
   const [showAndroidSuccessModal, setShowAndroidSuccessModal] = useState(false)
   const [isDark, setIsDark] = useState(false)
 
-  // Check if already installed
+  // Check if already installed on initial load
   useEffect(() => {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     
@@ -34,7 +34,8 @@ export function LandingPage() {
         setShowAndroidSuccessModal(true)
         sessionStorage.removeItem('justInstalled')
       } else {
-        // Already installed, redirect to app
+        // Already installed - if on landing page, redirect to app
+        // (Don't show modal on initial load if already installed)
         const currentPath = window.location.pathname
         if (currentPath === '/' || currentPath === '') {
           navigate('/app', { replace: true })
@@ -88,17 +89,36 @@ export function LandingPage() {
     }
   }, [])
 
-  const handleDownload = async () => {
-    // Check if iOS (any browser on iOS)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+  const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    )
+  }
 
-    if (isIOS) {
-      // Show iOS modal
+  const isIOS = () => {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent)
+  }
+
+  const isMacOS = () => {
+    return /Macintosh|MacIntel|MacPPC|Mac68K/.test(navigator.userAgent)
+  }
+
+  const handleDownload = async () => {
+    // Check if iOS or macOS - show "not available" message
+    if (isIOS() || isMacOS()) {
       setShowIOSModal(true)
       return
     }
 
-    // If install prompt is available (Android/Desktop), trigger it
+    // Check if already installed (standalone mode)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    if (isStandalone) {
+      // Already installed - show success modal with appropriate device message
+      setShowAndroidSuccessModal(true)
+      return
+    }
+
+    // Not installed - try to show install prompt
     if (deferredPrompt) {
       try {
         await deferredPrompt.prompt()
@@ -122,10 +142,8 @@ export function LandingPage() {
         setDeferredPrompt(null)
       }
     } else {
-      // No install prompt available
-      // On mobile (Android without prompt), stay on landing page
-      // On desktop, user can install from browser menu, so stay on landing page too
-      // Don't auto-navigate to app
+      // No install prompt available - button does nothing
+      // User can install manually from browser menu if needed
     }
   }
 
@@ -198,8 +216,10 @@ export function LandingPage() {
         isOpen={showAndroidSuccessModal}
         onClose={() => setShowAndroidSuccessModal(false)}
         appName="resto26"
+        isMobile={isMobileDevice()}
       />
     </div>
   )
 }
+
 

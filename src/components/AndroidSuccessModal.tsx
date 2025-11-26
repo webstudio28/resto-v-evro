@@ -2,14 +2,20 @@ interface AndroidSuccessModalProps {
   isOpen: boolean
   onClose: () => void
   appName: string
+  isMobile?: boolean
 }
 
 export function AndroidSuccessModal({
   isOpen,
   onClose,
   appName,
+  isMobile = false,
 }: AndroidSuccessModalProps) {
   if (!isOpen) return null
+
+  const deviceText = isMobile
+    ? 'Приложението е инсталорано. Можете да го използвате директно от телефона си.'
+    : 'Приложението е инсталорано. Можете да го използвате директно от компютъра си.'
 
   return (
     <div
@@ -25,7 +31,7 @@ export function AndroidSuccessModal({
             Готово! {appName} е инсталирано
           </p>
           <p className="text-black dark:text-white text-sm">
-            Можете да го използвате директно от телефона си.
+            {deviceText}
           </p>
         </div>
         <button
