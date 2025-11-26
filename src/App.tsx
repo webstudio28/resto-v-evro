@@ -276,21 +276,36 @@ function App() {
               {t.productPrice}
             </label>
             <input
-              inputMode="decimal"
+              inputMode="none"
               enterKeyHint="done"
               placeholder="0.00"
               value={priceEURInput}
               onChange={(e) => setPriceEURInput(e.target.value)}
-              readOnly={!isDesktop}
-              onFocus={() => {
+              onKeyDown={(e) => {
+                if (!isDesktop) {
+                  e.preventDefault()
+                }
+              }}
+              tabIndex={0}
+              onFocus={(e) => {
                 setActiveField('price')
                 if (!keypadVisible) setKeypadVisible(true)
+                // Set cursor to end of input
+                if (e.target instanceof HTMLInputElement) {
+                  const length = e.target.value.length
+                  e.target.setSelectionRange(length, length)
+                }
               }}
-              onClick={() => {
+              onClick={(e) => {
                 setActiveField('price')
                 if (!keypadVisible) setKeypadVisible(true)
+                // Set cursor to end of input
+                if (e.target instanceof HTMLInputElement) {
+                  const length = e.target.value.length
+                  e.target.setSelectionRange(length, length)
+                }
               }}
-              className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
+              className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 caret-black dark:caret-white ${
                 activeField === 'price'
                   ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
                   : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950'
@@ -308,21 +323,36 @@ function App() {
                 {t.paymentBGN}
               </label>
               <input
-                inputMode="decimal"
+                inputMode="none"
                 enterKeyHint="done"
                 placeholder="0.00"
                 value={payBGNInput}
                 onChange={(e) => setPayBGNInput(e.target.value)}
-                readOnly={!isDesktop}
-                onFocus={() => {
+                onKeyDown={(e) => {
+                  if (!isDesktop) {
+                    e.preventDefault()
+                  }
+                }}
+                tabIndex={0}
+                onFocus={(e) => {
                   setActiveField('bgn')
                   if (!keypadVisible) setKeypadVisible(true)
+                  // Set cursor to end of input
+                  if (e.target instanceof HTMLInputElement) {
+                    const length = e.target.value.length
+                    e.target.setSelectionRange(length, length)
+                  }
                 }}
-                onClick={() => {
+                onClick={(e) => {
                   setActiveField('bgn')
                   if (!keypadVisible) setKeypadVisible(true)
+                  // Set cursor to end of input
+                  if (e.target instanceof HTMLInputElement) {
+                    const length = e.target.value.length
+                    e.target.setSelectionRange(length, length)
+                  }
                 }}
-                className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
+                className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 caret-black dark:caret-white ${
                   activeField === 'bgn'
                     ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
                     : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950'
@@ -338,21 +368,36 @@ function App() {
                 {t.paymentEUR}
               </label>
               <input
-                inputMode="decimal"
+                inputMode="none"
                 enterKeyHint="done"
                 placeholder="0.00"
                 value={payEURInput}
                 onChange={(e) => setPayEURInput(e.target.value)}
-                readOnly={!isDesktop}
-                onFocus={() => {
+                onKeyDown={(e) => {
+                  if (!isDesktop) {
+                    e.preventDefault()
+                  }
+                }}
+                tabIndex={0}
+                onFocus={(e) => {
                   setActiveField('eur')
                   if (!keypadVisible) setKeypadVisible(true)
+                  // Set cursor to end of input
+                  if (e.target instanceof HTMLInputElement) {
+                    const length = e.target.value.length
+                    e.target.setSelectionRange(length, length)
+                  }
                 }}
-                onClick={() => {
+                onClick={(e) => {
                   setActiveField('eur')
                   if (!keypadVisible) setKeypadVisible(true)
+                  // Set cursor to end of input
+                  if (e.target instanceof HTMLInputElement) {
+                    const length = e.target.value.length
+                    e.target.setSelectionRange(length, length)
+                  }
                 }}
-                className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 ${
+                className={`w-full rounded-xl border-2 px-3 py-2.5 focus:outline-none transition-all duration-200 caret-black dark:caret-white ${
                   activeField === 'eur'
                     ? 'border-neutral-400 dark:border-neutral-500 bg-neutral-50 dark:bg-neutral-950'
                     : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950'
