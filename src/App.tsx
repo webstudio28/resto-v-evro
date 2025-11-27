@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { InstallPrompt } from './components/InstallPrompt'
+// import { InstallPrompt } from './components/InstallPrompt'
 import lightLogo from './assets/light-logo.png'
 import darkLogo from './assets/dark-logo.png'
 import languageLight from './assets/language-light.png'
@@ -585,7 +585,7 @@ function App() {
           </div>
         </div>
       </div>
-      <InstallPrompt />
+      {/* <InstallPrompt /> */}
       </div>
     </div>
   )
