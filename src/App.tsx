@@ -7,6 +7,8 @@ import languageLight from './assets/language-light.png'
 import languageDark from './assets/language-dark.png'
 import themeLight from './assets/theme-light.png'
 import themeDark from './assets/theme-dark.png'
+import bgIcon from './assets/bg.png'
+import euroIcon from './assets/euro.png'
 
 type Language = 'en' | 'bg'
 
@@ -53,7 +55,7 @@ const translations: Record<Language, Record<string, string>> = {
   },
   bg: {
     title: 'Калкулатор за преход към еврото',
-    productPrice: 'Цяла сума в евро (EUR)',
+    productPrice: 'Цялата сметка в евро (EUR)',
     paymentBGN: 'Плащане в BGN',
     paymentEUR: 'Плащане в EUR',
     changeDue: 'Ресто (EUR)',
@@ -315,12 +317,17 @@ function App() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={`block text-sm mb-1 transition-colors duration-200 ${
+              <label className={`flex items-center gap-1.5 text-sm mb-1 transition-colors duration-200 ${
                 activeField === 'bgn' 
                   ? 'text-navy-700 dark:text-neutral-200 font-medium' 
                   : 'text-neutral-700 dark:text-neutral-200'
               }`}>
                 {t.paymentBGN}
+                <img 
+                  src={bgIcon} 
+                  alt="BG" 
+                  className="w-3 h-3"
+                />
               </label>
               <input
                 inputMode="none"
@@ -360,12 +367,17 @@ function App() {
               />
             </div>
             <div>
-              <label className={`block text-sm mb-1 transition-colors duration-200 ${
+              <label className={`flex items-center gap-1.5 text-sm mb-1 transition-colors duration-200 ${
                 activeField === 'eur' 
                   ? 'text-navy-700 dark:text-neutral-200 font-medium' 
                   : 'text-neutral-700 dark:text-neutral-200'
               }`}>
                 {t.paymentEUR}
+                <img 
+                  src={euroIcon} 
+                  alt="EUR" 
+                  className="w-3 h-3"
+                />
               </label>
               <input
                 inputMode="none"

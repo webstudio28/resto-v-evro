@@ -20,6 +20,7 @@ export function LandingPage() {
   const [showIOSModal, setShowIOSModal] = useState(false)
   const [showAndroidSuccessModal, setShowAndroidSuccessModal] = useState(false)
   const [showProblemsModal, setShowProblemsModal] = useState(false)
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false)
   const [isDark, setIsDark] = useState(false)
 
   // Check if already installed on initial load
@@ -96,6 +97,8 @@ export function LandingPage() {
     )
   }
 
+  // Temporarily commented out - part of original logic
+  /*
   const isIOS = () => {
     return /iPad|iPhone|iPod/.test(navigator.userAgent)
   }
@@ -103,8 +106,15 @@ export function LandingPage() {
   const isMacOS = () => {
     return /Macintosh|MacIntel|MacPPC|Mac68K/.test(navigator.userAgent)
   }
+  */
 
   const handleDownload = async () => {
+    // TEMPORARY: Show coming soon modal for all devices
+    setShowComingSoonModal(true)
+    return
+
+    // ORIGINAL LOGIC - commented out temporarily until fix is found
+    /*
     // Check if iOS or macOS - show "not available" message
     if (isIOS() || isMacOS()) {
       setShowIOSModal(true)
@@ -170,6 +180,7 @@ export function LandingPage() {
         setShowAndroidSuccessModal(true)
       }
     }
+    */
   }
 
   const handleContinueWithoutInstall = () => {
@@ -274,6 +285,29 @@ export function LandingPage() {
             </div>
             <button
               onClick={() => setShowProblemsModal(false)}
+              className="w-full rounded-xl bg-white dark:bg-black border border-neutral-400 dark:border-neutral-600 px-8 py-3 text-base"
+            >
+              Затвори
+            </button>
+          </div>
+        </div>
+      )}
+      {showComingSoonModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+          onClick={() => setShowComingSoonModal(false)}
+        >
+          <div
+            className="bg-white dark:bg-black border border-neutral-300 dark:border-neutral-700 max-w-md w-full p-6 space-y-4 rounded-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="space-y-3">
+              <p className="text-base text-black dark:text-white text-center">
+                Очаквайте приложението скоро за Android и IOS
+              </p>
+            </div>
+            <button
+              onClick={() => setShowComingSoonModal(false)}
               className="w-full rounded-xl bg-white dark:bg-black border border-neutral-400 dark:border-neutral-600 px-8 py-3 text-base"
             >
               Затвори
