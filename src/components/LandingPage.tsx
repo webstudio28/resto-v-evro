@@ -214,9 +214,9 @@ export function LandingPage() {
           <div className="space-y-3 pt-8">
             <button
               onClick={handleContinueWithoutInstall}
-              className=" rounded-3xl bg-black dark:bg-white text-white dark:text-black px-6 py-3 text-sm"
+              className=" rounded-3xl bg-black dark:bg-white text-white dark:text-black px-10 py-3 text-sm"
             >
-              Използвай безплатно
+              Използвай сега
             </button>
           </div>
         </div>
