@@ -201,7 +201,7 @@ export function LandingPage() {
           />
           <div className="space-y-4">
             <p className="text-sm text-gray-700 dark:text-white px-4">
-             Бързо изчисляване на рестото при плащане в лева и евро.
+             Бързо изчисляване на рестото при плащане в лева и евро
             </p>
             <button
               onClick={() => setShowProblemsModal(true)}

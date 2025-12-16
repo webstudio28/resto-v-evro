@@ -30,3 +30,15 @@ local_docs/
 android/
 ios/
 capacitor.config.ts
+
+# Android keystore files
+*.jks
+*.keystore
+
+# Android build outputs and local configs
+*.apk
+*.aab
+local.properties
+
+# Keystore credentials (additional safety)
+**/keystore.properties
