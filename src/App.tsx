@@ -511,8 +511,8 @@ function App() {
         </div>
       </div>
 
-      {/* Mobile on-screen numeric keypad with hide/show, constrained to 528px */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-center">
+      {/* Mobile and tablet on-screen numeric keypad with hide/show, constrained to 528px */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center">
         <div className="w-full max-w-[528px]">
           <div className="px-4 relative overflow-hidden">
             <div
