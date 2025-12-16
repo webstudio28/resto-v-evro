@@ -10,27 +10,10 @@ export function NativeLandingPage() {
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
-    // Detect dark mode
-    const checkDarkMode = () => {
-      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
-      const hasDarkClass = document.documentElement.classList.contains('dark')
-      setIsDark(prefersDark || hasDarkClass)
-    }
-
-    checkDarkMode()
-
-    // Listen for theme changes
-    const mql = window.matchMedia('(prefers-color-scheme: dark)')
-    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches)
-    
-    if (typeof mql.addEventListener === 'function') {
-      mql.addEventListener('change', handler)
-      return () => mql.removeEventListener('change', handler)
-    } else {
-      // Fallback for older browsers
-      mql.addListener(handler)
-      return () => mql.removeListener(handler)
-    }
+    // Check if theme is saved in localStorage or dark class exists
+    const savedTheme = localStorage.getItem('theme')
+    const hasDarkClass = document.documentElement.classList.contains('dark')
+    setIsDark(savedTheme === 'dark' || hasDarkClass)
   }, [])
 
   const handleContinue = () => {

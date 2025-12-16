@@ -83,8 +83,7 @@ function useTheme(): [string, (t: 'light' | 'dark') => void] {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('theme') as 'light' | 'dark' | null
     if (saved) return saved
-    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
-    return prefersDark ? 'dark' : 'light'
+    return 'light' // Always default to light mode
   })
 
   useEffect(() => {
