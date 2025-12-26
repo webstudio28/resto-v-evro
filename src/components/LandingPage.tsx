@@ -199,7 +199,7 @@ export function LandingPage() {
               onClick={handleContinueWithoutInstall}
               className=" rounded-3xl bg-black dark:bg-white text-white dark:text-black px-10 py-3 text-sm"
             >
-              Използвай сега
+              Използвай!
             </button>
           </div>
         </div>
@@ -208,7 +208,7 @@ export function LandingPage() {
       <div className="py-8 relative z-10 flex-shrink-0 space-y-4">
         <button
           onClick={handleDownload}
-          className="text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 px-4 py-1.5 rounded-full border border-neutral-300 dark:border-neutral-600 hover:border-neutral-400 dark:hover:border-neutral-500 bg-white dark:bg-black transition-colors mx-auto block"
+          className="text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 px-4 py-1.5 rounded-full border border-neutral-300 dark:border-neutral-600 hover:border-neutral-400 dark:hover:border-neutral-500 bg-white dark:bg-black transition-colors mx-auto block hidden"
         >
           Изтегли приложението
         </button>
