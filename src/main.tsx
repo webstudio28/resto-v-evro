@@ -6,6 +6,7 @@ import { LandingPage } from './components/LandingPage.tsx'
 import { NativeLandingPage } from './components/NativeLandingPage.tsx'
 import { App } from './App.tsx'
 import { PrivacyPolicy } from './components/PrivacyPolicy.tsx'
+import { Webstudio28Page } from './components/Webstudio28Page.tsx'
 import { setupServiceWorkerUpdates } from './lib/sw-update.ts'
 import { isNativePlatform } from './lib/platform.ts'
 
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<LandingPageComponent />} />
         <Route path="/app" element={<App />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/webstudio28" element={<Webstudio28Page />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

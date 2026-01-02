@@ -9,6 +9,12 @@ import themeLight from './assets/theme-light.png'
 import themeDark from './assets/theme-dark.png'
 import bgIcon from './assets/bg.png'
 import euroIcon from './assets/euro.png'
+import web1 from './assets/web-1.png'
+import web2 from './assets/web-2.png'
+import web3 from './assets/web-3.png'
+import web4 from './assets/web-4.png'
+import web5 from './assets/web-5.png'
+import { DailyPromoModal } from './components/DailyPromoModal'
 
 type Language = 'en' | 'bg'
 
@@ -52,6 +58,10 @@ const translations: Record<Language, Record<string, string>> = {
     hideKeypad: 'Hide keypad',
     footerText: 'Website for your business? See',
     clearAll: 'Clear all',
+    promoHeadline: 'Need a website that works for you while you run your business?',
+    promoCta: 'Free consultation',
+    promoClose: 'Close',
+    promoCarousel: 'Website examples',
   },
   bg: {
     title: 'Калкулатор за преход към еврото',
@@ -76,8 +86,13 @@ const translations: Record<Language, Record<string, string>> = {
     hideKeypad: 'Скрий клавиатура',
     footerText: 'Уебсайт за вашия бизнес? Вижте',
     clearAll: 'Изчисти всичко',
+    promoHeadline: 'Искаш повече клиенти и продажби? Ще ти направим сайт!',
+    promoCta: 'Безплатна консултация',
+    promoClose: 'Затвори',
+    promoCarousel: 'Примери за сайтове',
   },
 }
+
 
 function useTheme(): [string, (t: 'light' | 'dark') => void] {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -123,11 +138,15 @@ function useIsDesktop(): boolean {
 
 function App() {
   const navigate = useNavigate()
-  const [language, setLanguage] = useState<Language>('bg')
+  const [language, setLanguage] = useState<Language>(() => {
+    const saved = localStorage.getItem('language') as Language | null
+    return saved || 'bg'
+  })
   const t = useMemo(() => translations[language], [language])
   const [theme, setTheme] = useTheme()
   const isDesktop = useIsDesktop()
   const [keypadVisible, setKeypadVisible] = useState<boolean>(false)
+  const [promoOpen, setPromoOpen] = useState(false)
 
   const [priceEURInput, setPriceEURInput] = useState('')
   const [payBGNInput, setPayBGNInput] = useState('')
@@ -189,6 +208,28 @@ function App() {
 
   const isDark = theme === 'dark'
 
+  useEffect(() => {
+    localStorage.setItem('language', language)
+  }, [language])
+
+  useEffect(() => {
+    const key = 'webstudio28_promo_last_closed'
+    const now = Date.now()
+    const lastClosed = localStorage.getItem(key)
+    const eightHoursInMs = 8 * 60 * 60 * 1000 // 8 hours in milliseconds
+
+    // Only show if 8+ hours have passed since last close
+    if (!lastClosed || now - parseInt(lastClosed, 10) >= eightHoursInMs) {
+      setPromoOpen(true)
+    }
+  }, [])
+
+  const handleCloseModal = () => {
+    setPromoOpen(false)
+    // Save timestamp only when user closes the modal
+    localStorage.setItem('webstudio28_promo_last_closed', Date.now().toString())
+  }
+
   return (
     <div
       className={`theme-transition min-h-screen ${
@@ -197,6 +238,41 @@ function App() {
           : 'bg-white md:bg-gradient-to-b md:from-neutral-100 md:via-neutral-50 md:to-neutral-200'
       }`}
     >
+      <DailyPromoModal
+        open={promoOpen}
+        isDark={isDark}
+        headline={t.promoHeadline}
+        ctaLabel={t.promoCta}
+        closeAriaLabel={t.promoClose}
+        carouselAriaLabel={t.promoCarousel}
+        onClose={handleCloseModal}
+        onCta={() => {
+          handleCloseModal()
+          navigate('/webstudio28')
+        }}
+        items={[
+          {
+            image: web1,
+            title: language === 'bg' ? 'Сайт #1' : 'Website #1',
+          },
+          {
+            image: web2,
+            title: language === 'bg' ? 'Сайт #2' : 'Website #2',
+          },
+          {
+            image: web3,
+            title: language === 'bg' ? 'Сайт #3' : 'Website #3',
+          },
+          {
+            image: web4,
+            title: language === 'bg' ? 'Сайт #4' : 'Website #4',
+          },
+          {
+            image: web5,
+            title: language === 'bg' ? 'Сайт #5' : 'Website #5',
+          },
+        ]}
+      />
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-4 md:px-4 md:py-6 lg:py-10">
         <div className="flex flex-1 justify-center">
           <div
