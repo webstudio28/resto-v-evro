@@ -84,7 +84,7 @@ export function DailyPromoModal({
               aria-label={closeAriaLabel}
               className="rounded-xl border border-neutral-300 dark:border-neutral-700 px-2 py-1 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800"
             >
-              ✕
+              <span className="text-red-500">✕</span>
             </button>
           </div>
 
