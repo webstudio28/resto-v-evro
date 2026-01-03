@@ -29,6 +29,7 @@ const translations: Record<Language, Record<string, string>> = {
     learnMore: 'More about us',
     section2Title: 'Start with a consultation',
     section2Text: 'Start with a short, free consultation. We\'ll review your business and tell you what you really need.',
+    projectsTitle: 'Some of our projects',
     language: 'Language',
     useApp: 'Use calculator',
     formTitle: 'Request a consultation',
@@ -56,6 +57,7 @@ const translations: Record<Language, Record<string, string>> = {
     learnMore: 'Повече за нас',
     section2Title: 'Започнете с консултация',
     section2Text: 'Започнете с кратка, безплатна консултация. Ще разгледаме бизнеса ви и ще ви кажем какво реално ви трябва.',
+    projectsTitle: 'Някои от нашите проекти',
     language: 'Език',
     useApp: 'Използвай калкулатор',
     formTitle: 'Заявка за консултация',
@@ -107,6 +109,7 @@ export function Webstudio28Page() {
   const [formSubmitting, setFormSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [formSuccess, setFormSuccess] = useState(false)
+  const [projectsIdx, setProjectsIdx] = useState(0)
 
   const resetFormUi = () => {
     setFormSubmitting(false)
@@ -312,6 +315,76 @@ export function Webstudio28Page() {
                     >
                       {t.learnMore}
                     </button>
+                  </div>
+                </div>
+              </section>
+
+              {/* Projects carousel (loads only on this page) */}
+              <section className={`px-4 md:px-6 py-8 mb-8 rounded-xl ${isDark ? 'bg-neutral-800' : 'bg-neutral-50'} p-6`}>
+                <div className="space-y-4">
+                  <h2 className={`text-xl md:text-2xl font-semibold text-center ${isDark ? 'text-white' : 'text-black'}`}>
+                    {t.projectsTitle}
+                  </h2>
+
+                  <div className={`relative rounded-xl overflow-hidden border ${isDark ? 'border-neutral-700 bg-neutral-900' : 'border-neutral-200 bg-white'}`}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = projectsIdx === 0 ? portfolioImages.length - 1 : projectsIdx - 1
+                        setProjectsIdx(next)
+                      }}
+                      aria-label="Previous project"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 rounded-full bg-black/60 text-white p-2 hover:opacity-90 transition-opacity"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                      </svg>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = projectsIdx === portfolioImages.length - 1 ? 0 : projectsIdx + 1
+                        setProjectsIdx(next)
+                      }}
+                      aria-label="Next project"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 rounded-full bg-black/60 text-white p-2 hover:opacity-90 transition-opacity"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPortfolioIndex(projectsIdx)
+                        setShowPortfolioModal(true)
+                      }}
+                      className="block w-full"
+                      aria-label="Open project gallery"
+                    >
+                      <img
+                        src={portfolioImages[projectsIdx]}
+                        alt={`Project ${projectsIdx + 1}`}
+                        className="w-full h-[220px] md:h-[260px] object-cover"
+                        loading="lazy"
+                      />
+                    </button>
+
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                      {portfolioImages.map((_, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setProjectsIdx(idx)}
+                          aria-label={`Go to project ${idx + 1}`}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            idx === projectsIdx ? 'bg-white' : 'bg-white/50'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </section>

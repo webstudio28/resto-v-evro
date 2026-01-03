@@ -9,11 +9,6 @@ import themeLight from './assets/theme-light.png'
 import themeDark from './assets/theme-dark.png'
 import bgIcon from './assets/bg.png'
 import euroIcon from './assets/euro.png'
-import web1 from './assets/web-1.png'
-import web2 from './assets/web-2.png'
-import web3 from './assets/web-3.png'
-import web4 from './assets/web-4.png'
-import web5 from './assets/web-5.png'
 import { DailyPromoModal } from './components/DailyPromoModal'
 
 type Language = 'en' | 'bg'
@@ -244,34 +239,11 @@ function App() {
         headline={t.promoHeadline}
         ctaLabel={t.promoCta}
         closeAriaLabel={t.promoClose}
-        carouselAriaLabel={t.promoCarousel}
         onClose={handleCloseModal}
         onCta={() => {
           handleCloseModal()
           navigate('/webstudio28')
         }}
-        items={[
-          {
-            image: web1,
-            title: language === 'bg' ? 'Сайт #1' : 'Website #1',
-          },
-          {
-            image: web2,
-            title: language === 'bg' ? 'Сайт #2' : 'Website #2',
-          },
-          {
-            image: web3,
-            title: language === 'bg' ? 'Сайт #3' : 'Website #3',
-          },
-          {
-            image: web4,
-            title: language === 'bg' ? 'Сайт #4' : 'Website #4',
-          },
-          {
-            image: web5,
-            title: language === 'bg' ? 'Сайт #5' : 'Website #5',
-          },
-        ]}
       />
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-4 md:px-4 md:py-6 lg:py-10">
         <div className="flex flex-1 justify-center">
