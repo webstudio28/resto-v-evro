@@ -55,6 +55,7 @@ const translations: Record<Language, Record<string, string>> = {
     clearAll: 'Clear all',
     promoHeadline: 'Need a website that works for you while you run your business?',
     promoCta: 'Free consultation',
+    promoSecondary: 'To calculator',
     promoClose: 'Close',
     promoCarousel: 'Website examples',
   },
@@ -83,6 +84,7 @@ const translations: Record<Language, Record<string, string>> = {
     clearAll: 'Изчисти всичко',
     promoHeadline: 'Искаш повече клиенти и продажби? Ще ти направим сайт!',
     promoCta: 'Безплатна консултация',
+    promoSecondary: 'Към калкулатора',
     promoClose: 'Затвори',
     promoCarousel: 'Примери за сайтове',
   },
@@ -238,12 +240,14 @@ function App() {
         isDark={isDark}
         headline={t.promoHeadline}
         ctaLabel={t.promoCta}
+        secondaryLabel={t.promoSecondary}
         closeAriaLabel={t.promoClose}
         onClose={handleCloseModal}
         onCta={() => {
           handleCloseModal()
           navigate('/webstudio28')
         }}
+        onSecondary={handleCloseModal}
       />
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-4 md:px-4 md:py-6 lg:py-10">
         <div className="flex flex-1 justify-center">

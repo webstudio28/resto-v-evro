@@ -3,9 +3,11 @@ type Props = {
   isDark: boolean
   headline: string
   ctaLabel: string
+  secondaryLabel?: string
   closeAriaLabel: string
   onClose: () => void
   onCta: () => void
+  onSecondary?: () => void
 }
 
 export function DailyPromoModal({
@@ -13,14 +15,16 @@ export function DailyPromoModal({
   isDark,
   headline,
   ctaLabel,
+  secondaryLabel,
   closeAriaLabel,
   onClose,
   onCta,
+  onSecondary,
 }: Props) {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <button
         type="button"
@@ -33,7 +37,7 @@ export function DailyPromoModal({
       <div
         role="dialog"
         aria-modal="true"
-        className={`relative w-full max-w-[528px] rounded-t-2xl md:rounded-2xl border shadow-lg ${
+        className={`relative w-full max-w-[528px] rounded-2xl border shadow-lg ${
           isDark ? 'border-neutral-800 bg-neutral-900' : 'border-neutral-200 bg-white'
         }`}
       >
@@ -59,6 +63,16 @@ export function DailyPromoModal({
           >
             {ctaLabel}
           </button>
+
+          {secondaryLabel && onSecondary ? (
+            <button
+              type="button"
+              onClick={onSecondary}
+              className="mt-3 w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-4 py-3 text-sm font-semibold text-neutral-900 dark:text-white transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800"
+            >
+              {secondaryLabel}
+            </button>
+          ) : null}
         </div>
       </div>
     </div>
